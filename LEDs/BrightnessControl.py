@@ -1,39 +1,38 @@
 from neopixel import *
 import Colors
 
-LEVEL0 = 0
-LEVEL1 = 31
-LEVEL2 = 62
-LEVEL3 = 93
-LEVEL4 = 124
-LEVEL5 = 155
-LEVEL6 = 186
-LEVEL7 = 217
-LEVEL8 = 248
+class LEDLevel:
+	def __init__(index):
+		myLevel = i
+		firstLED = 64 - (8 * i)
+		brightnessLevel = (31 * i)
 
-LEVEL0_FIRSTLED = 64
-LEVEL1_FIRSTLED = 56
-LEVEL2_FIRSTLED = 48
-LEVEL3_FIRSTLED = 40
-LEVEL4_FIRSTLED = 32 
-LEVEL5_FIRSTLED = 24
-LEVEL6_FIRSTLED = 16
-LEVEL7_FIRSTLED = 8
-LEVEL8_FIRSTLED = 0
+BEGIN_LED = 0
+END_LED = 63
 
 matrix = null
-brightnessLevel = BRIGHTNESS_LEVEL4
+pixelColor = null
+curLevel = null
+LEDLevelArray = []
 
-def initialize(matrix, brightnessLevel):
-	self.matrix = matrix
-	if brightnessLevel not null:
-		self.brightnessLevel = brightnessLevel
+def initializeArray:
+	for i in range (0, 9):
+		LEDLevelArray.append(LEDLevel(i))
 
-# Sets RGB Value to Black of all LEDs up to (but not including) index
-def offLEDs(index):
-	for i in range(0,index - 1):
+# Sets RGB Value to Black of all LEDs up to (but not including) level first LED
+def offLEDs(level):
+	for i in range(curLevel.firstLED, LEDLevelArray[level].firstLED):
 		matrix.setPixelColor(i, Colors.BLACK)
+		
+# 
+def onLEDS(level):
 
 # Lamp goes into control mode
 def controlMode():
 
+#Initialize, gets color from last LED
+def __init__(matrix):
+	self.matrix = matrix
+	self.pixelColor = matrix.getPixelColor(END_LED)
+	initializeArray()
+	curLevel = LEDLevelArray[4]
