@@ -12,6 +12,9 @@ LED_BRIGHTNESS = 4 * 31  # Start Brightness at Level 4
 LED_INVERT     = False   # True to invert the signal (when using NPN transistor level shift)
 PIXEL_COLOR    = null
 
+def function():
+	pass
+	
 if __name__ == '__main__':
 	# Create NeoPixel object with appropriate configuration.
 	matrix = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)
