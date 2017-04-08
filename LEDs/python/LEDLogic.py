@@ -2,6 +2,7 @@ import time
 
 from neopixel import *
 import Colors
+import BrightnessControl
 
 # LED strip configuration:
 LED_COUNT      = 64      # Number of LED pixels.
@@ -116,7 +117,6 @@ class BrightnessCtrl:
                 self.curLevel = self.LEDLevelArray[4]
                 self.curIndex = 4
 
-
 def function():
 	pass
 	
@@ -130,7 +130,7 @@ if __name__ == '__main__':
         for i in range (0,64):
                 matrix.setPixelColor(i, 0xFF0000)
 
-        brightnessControl = BrightnessCtrl()
+        brightnessControl = BrightnessControl.BrightnessCtrl()
 
         matrix.show()
 
