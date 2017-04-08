@@ -1,24 +1,18 @@
-BLACK = Color(0, 0, 0)
-
-"""
-Sets all LEDs to be lit a random color. All other Black.
+''' Sets all LEDs to be lit a random color. All other Black.
 Input:
 	matrix - Neopixel Wrapper
 	binaryMatrix - Length 64 Binary Array
-Output: None
-"""
+Output: None '''
 def setRandomColor(matrix, binaryMatrix):
 	for lednum in range (0,63):
-		#TODO
+                pass
 
-"""
-Sets all LEDs to be lit a single color. All other Black.
+""" Sets all LEDs to be lit a single color. All other Black.
 Input:
-	matrix - Neopixel Wrapper
-	binaryMatrix - Length 64 binary Array
-	color - 24 Bit RGB Value
-Output: None
-"""
+        matrix - Neopixel Wrapper
+        binaryMatrix - Length 64 binary Array
+        color - 24 Bit RGB Value
+Output: None """
 def setSingleColor(matrix, binaryMatrix, color):
 	for lednum in range (0,63):
 		if binaryMatrix[lednum]:
@@ -44,3 +38,5 @@ def ReverseColor(color):
 		((color >> 8) & 0xFF),
 		(color & 0xFF)
 	]
+
+BLACK = Color(0, 0, 0)
