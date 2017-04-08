@@ -130,7 +130,7 @@ if __name__ == '__main__':
         for i in range (0,64):
                 matrix.setPixelColor(i, 0xFF0000)
 
-        brightnessControl = BrightnessControl.BrightnessCtrl()
+        brightnessControl = BrightnessControl.BrightnessCtrl(matrix)
 
         matrix.show()
 
