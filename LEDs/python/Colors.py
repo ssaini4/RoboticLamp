@@ -1,9 +1,18 @@
+'''
+The Colors Library does not set Matrix LED values, but rather returns
+RGB Values to the method caller.
+'''
+
+
+def getAvgColor(matrix, binaryMatrix, numColors):
+
 ''' Sets all LEDs to be lit a random color. All other Black.
 Input:
 	matrix - Neopixel Wrapper
 	binaryMatrix - Length 64 Binary Array
+	numColors - Number of random colors to use. 1 = All LEDs same color
 Output: None '''
-def setRandomColor(matrix, binaryMatrix):
+def getRandomColor(matrix, binaryMatrix, numColors):
 	for lednum in range (0,63):
                 pass
 
@@ -20,11 +29,11 @@ def setSingleColor(matrix, binaryMatrix, color):
 		else:
 			matrix.setPixelColor(lednum, BLACK)
 
+"""Convert the provided red, green, blue color to a 24-bit color value.
+Each color component should be a value 0-255 where 0 is the lowest intensity
+and 255 is the highest intensity.
+"""
 def Color(red, green, blue, white = 0):
-	"""Convert the provided red, green, blue color to a 24-bit color value.
-	Each color component should be a value 0-255 where 0 is the lowest intensity
-	and 255 is the highest intensity.
-	"""
 	return (white << 24) | (red << 16)| (green << 8) | blue
 
 """
