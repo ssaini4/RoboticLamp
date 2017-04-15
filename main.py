@@ -12,7 +12,7 @@ import imutils
 import argparse
 import time
 import HandDetection
-
+import glob
 # ------------------------ BEGIN ------------------------ #
 #Construct the arguent parser and parse the arguments for the camera input to be used
 ap = argparse.ArgumentParser()
@@ -28,10 +28,24 @@ bg_captured=0
 
 while True:
 	img = camera.read()
-	drawing = HandDetection.getDrawing(img)
-	cv2.imshow('output',drawing)
+	HandDetection.getMatch(img)
 	cv2.imshow('input',img)
 				
 	k = cv2.waitKey(10)
 	if k == 27:
 		break
+'''
+path = '/home/pi/Desktop/RoboticLamp/Images/*.jpg'
+j=0
+
+for i in glob.glob(path):
+	img = cv2.imread(i,0 )
+	cv2.imshow('input',img)
+	drawing = HandDetection.getDrawing(img)
+	cv2.imshow('output', drawing)
+	cv2.waitKey(0)
+	cv2.destroyAllWindows()
+	#cv2.imwrite('/home/pi/Desktop/RoboticLamp/Features/' +str(j)+'.jpg' , drawing);
+	j+=1
+print 'hi'
+'''
