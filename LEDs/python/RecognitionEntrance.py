@@ -6,6 +6,8 @@ matrix = None
 windowIdx = None
 windowRGBArray = [None] * 5
 
+savedMatrixRGB = [None] * 64
+
 # Returns True if already 0%, False otherwise
 def downLevel(self):
 	if self.windowIdx not 0:
@@ -30,6 +32,9 @@ def upLevel(self):
 		return True
 
 def enterRecognitionEntrance(self, average, random):
+	# Save previous RGB Array
+	for i in range (0, 64):
+		self.savedMatrixRGB[i] = self.matrix.getPixelColor(i)
 	# 5 Windows
 	if average:
 		prevRGBArray = Colors.getRGBArray(self.matrix)
@@ -50,6 +55,8 @@ def enterRecognitionEntrance(self, average, random):
 	Colors.setRGBArray(self.matrix, windowRGBArray[self.windowIdx])
 
 def exitRecognitionEntrance(self):
+	for i in range (0,64):
+		self.matrix.setPixelColor(i, self.savedMatrixRGB[i])
 
 def __init__(self, matrix):
 	self.matrix = matrix

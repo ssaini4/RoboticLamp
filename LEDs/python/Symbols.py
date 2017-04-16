@@ -129,7 +129,8 @@ RECOGNITION_IN_PERCENT = [
 	[	0xFF, 0xFF,
 		0xFF, 0xFF,
 		0xFF, 0xFF,
-		0xFF, 0xFF ] ]
+		0xFF, 0xFF ] 
+]
 
 # Same as RECOGNITION_IN but
 # Windows go in to out.
@@ -157,8 +158,37 @@ RECOGNITION_OUT_PERCENT = [
 	[	0xFF, 0xFF,
 		0xFF, 0xFF,
 		0xFF, 0xFF,
-		0xFF, 0xFF ],
+		0xFF, 0xFF ]
+]
 
+# Bar at the bottom of the LEDs
+# to indicate 0-25-50-75-100% Lock
+# Does not affect other LEDs
+PERCENT_BAR = [
+	[	None, None,
+		None, None,
+		None, None,
+		None, 0x00 ],
+
+	[	None, None,
+		None, None,
+		None, None,
+		None, 0xC0 ],
+
+	[	None, None,
+		None, None,
+		None, None,
+		None, 0xF0 ],
+
+	[	None, None,
+		None, None,
+		None, None,
+		None, 0xFC ],
+
+	[	None, None,
+		None, None,
+		None, None,
+		None, 0xFF ]
 ]
 
 # ----------- SYMBOLS END -----------

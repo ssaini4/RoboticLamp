@@ -12,8 +12,10 @@ def getRGBArray(matrix):
 
 def setRGBArray(matrix, RGBArray):
 	for lednum in range (0,64):
-		matrix.setPixelColor(lednum, RGBArray[lednum])
+		if RGBArray[lednum] not None:
+			matrix.setPixelColor(lednum, RGBArray[lednum])
 
+	matrix.show()
 ''' 
 Grabs a number of colors using current matrix RGB Values
 using a Gaussian Normal Distribution on each RGB Value
@@ -81,6 +83,7 @@ def setRandomColor(matrix, binaryMatrix):
 		if binaryMatrix[lednum]:
 			matrix.setPixelColor(lednum, randint(0, 0xFFFFFF))
 
+	matrix.show()
 ''' 
 Gets RGB Array for Single Color. All other Black.
 Input:
@@ -116,6 +119,8 @@ def setSingleColor(matrix, binaryMatrix, color):
 		else:
 			matrix.setPixelColor(lednum, BLACK)
 
+	matrix.show()
+	
 ''' 
 Convert the provided red, green, blue color to a 24-bit color value.
 Each color component should be a value 0-255 where 0 is the lowest intensity
