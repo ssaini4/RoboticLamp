@@ -31,8 +31,8 @@ class RecognitionMode:
 	# Sets it red to indicate loss of lock
 	# Returns TRUE if already 0
 	def downLevel(self):
-		if self.CompletionBarIdx not 0:
-			self.CompletionBarIdx--
+		if self.CompletionBarIdx not in 0:
+			self.CompletionBarIdx -= 1
 			Colors.setSingleColor(self.matrix, CompletionBarBinary[self.CompletionBarIdx], Colors.RED)
 
 			return False
@@ -43,11 +43,11 @@ class RecognitionMode:
 	# Sets it green to indicate close lock
 	# Returns TRUE if at 4 (100%)
 	def upLevel(self):
-		if self.windowIdx not 4:
-			self.windowIdx++
+		if self.windowIdx not in 4:
+			self.windowIdx += 1
 			Colors.setSingleColor(self.matrix, CompletionBarBinary[self.CompletionBarIdx], Colors.GREEN)
 			
-			if self.windowIdx not 4:
+			if self.windowIdx not in 4:
 				return False
 			else:
 				return True
@@ -57,7 +57,7 @@ class RecognitionMode:
 	# No lock on a gesture - continue cycling windows
 	# Resets completion bar
 	def noLock(self):
-		self.windowIdx = (self.windowIdx++) % 5
+		self.windowIdx = (self.windowIdx + 1) % 5
 		Colors.setRGBArray(self.matrix, windowRGBArray[self.windowIdx])
 		self.CompletionBarIdx = 0
 
@@ -76,7 +76,7 @@ class RecognitionMode:
 			# Symbol color gets one of the Windows
 			SymbolColor = randint(0,4)
 
-		else if random:
+		elif random:
 			for winNum in range (0,5):
 				windowRGBArray[winNum] = Colors.getRandomColor(Symbols.processSymbol(Symbols.RECOGNITION_IN_PERCENT[winNum]))
 

@@ -3,16 +3,16 @@ import math
 import numpy.random as rando
 
 def getRGBArray(matrix):
-	RGBArray = []
+	RGBArray = [None] * 64
 
 	for lednum in range (0,64):
-		RGBArray = matrix.getPixelColor(lednum)
+		RGBArray[lednum] = matrix.getPixelColor(lednum)
 
 	return RGBArray
 
 def setRGBArray(matrix, RGBArray):
 	for lednum in range (0,64):
-		if RGBArray[lednum] not None:
+		if RGBArray[lednum] != None:
 			matrix.setPixelColor(lednum, RGBArray[lednum])
 
 	matrix.show()
@@ -27,30 +27,35 @@ Output:
 	ColorArray[numColors]
 '''
 def getAvgColor(RGBArray, numColors):
-	ColorArray = []
+	ColorArray = [None] * numColors
 	numRGBs = 0
 	red, green, blue = 0,0,0
 
 	for lednum in range (0,64):
-		if RGBArray[lednum] not 0:
-			pixelRGB = ReverseColor(RGBArray[lednum])
-
+		if RGBArray[lednum] != 0:
+			pixelRGB = ReverseColor(RGBArray[lednum])                   
+			
 			red += pow(pixelRGB[0], 2)
 			green += pow(pixelRGB[1], 2)
 			blue += pow(pixelRGB[2], 2)
-			numRGBS++
+			numRGBs += 1
 
-	red = red / numRGBS
-	green = green / numRGBS
-	blue = blue / numRGBS
+	# NEed to add Divide by 0 Check
+
+	red = math.sqrt(red / numRGBs)
+	green = math.sqrt(green / numRGBs)
+	blue = math.sqrt(blue / numRGBs)
+
+	#print str(hex(red)) + " " + str(hex(green)) + " " + str(hex(blue))
 
 	# Values to be adjusted
-	redVals = rando.normal(red, 25.5, numColors)
-	greenVals = rando.normal(green, 25.5, numColors)
-	blueVals = rando.normal(blue, 25.5, numColors)
+	redVals = rando.normal(red, 15.5, numColors)
+	greenVals = rando.normal(green, 15.5, numColors)
+	blueVals = rando.normal(blue, 15.5, numColors)
 
-	for i in range (0, numColors)
-		ColorArray[i] = Color(redVals[i], greenVals[i], blueVals[i])
+	for i in range (0, numColors):
+		ColorArray[i] = Color(int(redVals[i]), int(greenVals[i]), int(blueVals[i]))
+		print str(hex(ColorArray[i]))
 
 	return ColorArray
 
@@ -127,7 +132,7 @@ Each color component should be a value 0-255 where 0 is the lowest intensity
 and 255 is the highest intensity.
 '''
 def Color(red, green, blue, white = 0):
-	return (white << 24) | (red << 16)| (green << 8) | blue
+	return (white << 24) | (clip(red) << 16)| (clip(green) << 8) | clip(blue)
 
 '''
 Reverse action of Color.
@@ -141,10 +146,20 @@ def ReverseColor(color):
 		(color & 0xFF)
 	]
 
+# Clips RGB Values to be 0 to 255
+def clip(color):
+        if color > 255:
+                return 255
+        elif color < 0:
+                return 0
+        else:
+                return color
+
 '''
 COLORS
 From: https://en.wikipedia.org/wiki/Web_colors
 '''
+
 
 # Pink Colors
 PINK 	= 0xFFC0CB
