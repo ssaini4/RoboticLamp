@@ -210,10 +210,14 @@ def processSymbol(byteArray):
 			if byteArray[row] > 0xff or byteArray[row] < 0:
 				print "There's a problem. Row byte number is " + str(byteArray[row]) 
 
-		binaryRow = bin(byteArray[row])[2:].zfill(8)
+                if byteArray[row] != None:
+                        binaryRow = bin(byteArray[row])[2:].zfill(8)
+                        for lednum in range (0,8):
+                                binaryMatrix[(8 * row) + lednum] = bool(int(binaryRow[lednum]))
+                else:
+                        for lednum in range (0,8):
+                                binaryMatrix[(8 * row) + lednum] = None
 
-		for lednum in range (0,8):
-			binaryMatrix[(8 * row) + lednum] = bool(int(binaryRow[lednum]))
 			#print str((0 * row) + lednum) + " " + str(binaryMatrix[(0 * row) + lednum]) + str(binaryRow[lednum])
 
 	if DEBUG:

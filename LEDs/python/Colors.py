@@ -116,14 +116,18 @@ Input:
 Output: None 
 '''
 def setSingleColor(matrix, binaryMatrix, color):
+        print str(binaryMatrix)
+        
 	for lednum in range (0,64):
-		if binaryMatrix[lednum] is None:
-			continue
-		elif binaryMatrix[lednum]:
-			matrix.setPixelColor(lednum, color)
-		else:
-			matrix.setPixelColor(lednum, BLACK)
-
+                try:
+                        if binaryMatrix[lednum]:
+                                print "set! " + str(lednum)
+                                matrix.setPixelColor(lednum, color)
+                        else:
+                                matrix.setPixelColor(lednum, BLACK)
+                except IndexError:
+                        print "skipped "+ str(lednum)
+                        
 	matrix.show()
 	
 ''' 

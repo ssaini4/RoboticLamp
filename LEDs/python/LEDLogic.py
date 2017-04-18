@@ -6,6 +6,7 @@ import BrightnessControl as BrightCtrl
 import RecognitionEntrance as RecogEntr
 import RecognitionMode as RecogMode
 import Symbols
+from random import randint
 
 # LED strip configuration:
 LED_COUNT      = 64      # Number of LED pixels.
