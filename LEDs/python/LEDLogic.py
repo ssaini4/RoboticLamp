@@ -38,6 +38,8 @@ if __name__ == '__main__':
 
         while True:
                 value = raw_input("0: RecogEntr, 1: RecogMode, 2: BrightCtrl, 3: exit - ")
+                
+                #Recognition Entrance
                 if value == "0":
                         inputBool = False
                         while not inputBool:
@@ -70,8 +72,46 @@ if __name__ == '__main__':
                                 else:
                                         print "Try again."
                                         
+                #Recognition Mode                        
                 elif value == "1":
-                        pass
+                        inputBool = False
+                        while not inputBool:
+                                value = raw_input("0: Average RGB, 1: Random RGB - ")
+                                if value == "0":
+                                        RM.enterRecognitionMode(average = True)
+                                        inputBool = True
+                                elif value == "1":
+                                        RM.enterRecognitionMode(random = True)
+                                        inputBool = True
+                                else:
+                                        print "try again"
+
+                        while True:
+                                value = raw_input("up, down, symbol, nolock, or exit? - ")
+                                if value == "up":
+                                        outBool = RM.upLevel()
+                                        if outBool:
+                                                print "Reached 100%!"
+
+                                elif value == "down":
+                                        outBool = RM.downLevel()
+                                        if outBool:
+                                                print "Already at 0%!"
+
+                                elif value == "symbol":
+                                        RM.displaySymbol(Symbols.processSymbol(Symbols.SYMBOL_B), randint(0,4))
+
+                                elif value == "nolock":
+                                        RM.noLock()
+
+                                elif value == "exit":
+                                        RM.exitRecognitionMode()
+                                        break
+
+                                else:
+                                        print "Try again."
+
+                #Brightness Control
                 elif value == "2":
                         BC.enterControlMode()
                         

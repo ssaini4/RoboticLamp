@@ -31,7 +31,7 @@ class RecognitionMode:
 	# Sets it red to indicate loss of lock
 	# Returns TRUE if already 0
 	def downLevel(self):
-		if self.CompletionBarIdx not in 0:
+		if self.CompletionBarIdx != 0:
 			self.CompletionBarIdx -= 1
 			Colors.setSingleColor(self.matrix, CompletionBarBinary[self.CompletionBarIdx], Colors.RED)
 
@@ -43,11 +43,11 @@ class RecognitionMode:
 	# Sets it green to indicate close lock
 	# Returns TRUE if at 4 (100%)
 	def upLevel(self):
-		if self.windowIdx not in 4:
+		if self.windowIdx != 4:
 			self.windowIdx += 1
 			Colors.setSingleColor(self.matrix, CompletionBarBinary[self.CompletionBarIdx], Colors.GREEN)
 			
-			if self.windowIdx not in 4:
+			if self.windowIdx != 4:
 				return False
 			else:
 				return True
@@ -61,7 +61,7 @@ class RecognitionMode:
 		Colors.setRGBArray(self.matrix, windowRGBArray[self.windowIdx])
 		self.CompletionBarIdx = 0
 
-	def enterRecognitionMode(self, average, random):
+	def enterRecognitionMode(self, average = False, random = False):
 		# Save previous RGB Array
 		for i in range (0, 64):
 			self.savedMatrixRGB[i] = self.matrix.getPixelColor(i)

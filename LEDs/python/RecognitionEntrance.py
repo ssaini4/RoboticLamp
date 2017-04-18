@@ -59,7 +59,7 @@ class RecognitionEntrance:
 		Colors.setRGBArray(self.matrix, self.windowRGBArray[self.windowIdx])
 
 	def exitRecognitionEntrance(self):
-                Colors.setRGBArray(self.matrix, self.savedMatrixRGB)
+        Colors.setRGBArray(self.matrix, self.savedMatrixRGB)
 
 	def __init__(self, matrix):
 		self.matrix = matrix
