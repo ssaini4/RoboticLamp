@@ -6,7 +6,6 @@ import imutils
 import argparse
 import time
 import glob
-<<<<<<< HEAD
 
 def getKeypoints():
 	path = '/home/pi/Desktop/RoboticLamp/Images/*.jpg'
@@ -95,8 +94,7 @@ def drawMatches(img1, kp1, img2, kp2, matches):
     # Also return the image if you'd like a copy
     return out
     
-=======
->>>>>>> 4aa242def24f1bed0018870c3ce2f0039f428124
+
 def getDrawing(img):
 	gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 	'''
@@ -164,19 +162,10 @@ def getDrawing(img):
 	   i=0
 	return drawing
 	
-<<<<<<< HEAD
 def getMatch(gray, keypoints):
 	orb = cv2.ORB()
 	kp = orb.detect(gray, None)
 	kp, des = orb.compute(gray,kp)
-=======
-def getMatch(gray):
-	orb = cv2.ORB()
-	kp = orb.detect(gray, None)
-	kp, des = orb.compute(gray,kp)
-	path = '/home/pi/Desktop/RoboticLamp/Images/*.jpg'
->>>>>>> 4aa242def24f1bed0018870c3ce2f0039f428124
-	j=0
 	
 	FLANN_INDEX_KDTREE = 0
 	index_params =dict(algorithm = 6, table_number = 6, 
@@ -187,7 +176,6 @@ def getMatch(gray):
 	
 	maxMatches = 0
 	maxLabel = ''
-<<<<<<< HEAD
 	for i in keypoints:
 		kp2,des2, label = i		
 		matches =flann.knnMatch(des,des2,k=2)
@@ -199,7 +187,6 @@ def getMatch(gray):
 			maxMatches = sumMatches
 			maxLabel = label
 			
-=======
 		
 	for i in glob.glob(path):
 		img = cv2.imread(i,0 )
@@ -214,6 +201,5 @@ def getMatch(gray):
 		if(sumMatches > maxMatches):
 			maxMatches = sumMatches
 			maxLabel = i
->>>>>>> 4aa242def24f1bed0018870c3ce2f0039f428124
 			
 	print maxLabel

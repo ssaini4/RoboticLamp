@@ -29,11 +29,8 @@ keypoints = HandDetection.getKeypoints()
 
 while True:
 	img = camera.read()
-<<<<<<< HEAD
+	
 	HandDetection.getMatch(img,keypoints)
-=======
-	HandDetection.getMatch(img)
->>>>>>> 4aa242def24f1bed0018870c3ce2f0039f428124
 	cv2.imshow('input',img)
 	k = cv2.waitKey(10)
 	if k == 27:
