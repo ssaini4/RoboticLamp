@@ -1,6 +1,6 @@
-from bitstring import BitArray
+import binascii
 
-DEBUG = 1
+DEBUG = 0
 
 # ----------- SYMBOLS BEGIN  -----------
 SYMBOL_ALL_ON = [
@@ -129,7 +129,8 @@ RECOGNITION_IN_PERCENT = [
 	[	0xFF, 0xFF,
 		0xFF, 0xFF,
 		0xFF, 0xFF,
-		0xFF, 0xFF ] ]
+		0xFF, 0xFF ] 
+]
 
 # Same as RECOGNITION_IN but
 # Windows go in to out.
@@ -157,8 +158,37 @@ RECOGNITION_OUT_PERCENT = [
 	[	0xFF, 0xFF,
 		0xFF, 0xFF,
 		0xFF, 0xFF,
-		0xFF, 0xFF ],
+		0xFF, 0xFF ]
+]
 
+# Bar at the bottom of the LEDs
+# to indicate 0-25-50-75-100% Lock
+# Does not affect other LEDs
+PERCENT_BAR = [
+	[	None, None,
+		None, None,
+		None, None,
+		None, 0x00 ],
+
+	[	None, None,
+		None, None,
+		None, None,
+		None, 0xC0 ],
+
+	[	None, None,
+		None, None,
+		None, None,
+		None, 0xF0 ],
+
+	[	None, None,
+		None, None,
+		None, None,
+		None, 0xFC ],
+
+	[	None, None,
+		None, None,
+		None, None,
+		None, 0xFF ]
 ]
 
 # ----------- SYMBOLS END -----------
@@ -180,14 +210,19 @@ def processSymbol(byteArray):
 			if byteArray[row] > 0xff or byteArray[row] < 0:
 				print "There's a problem. Row byte number is " + str(byteArray[row]) 
 
-		binaryRow = BitArray(hex = byteArray[row]).bin[2:]
+                if byteArray[row] != None:
+                        binaryRow = bin(byteArray[row])[2:].zfill(8)
+                        for lednum in range (0,8):
+                                binaryMatrix[(8 * row) + lednum] = bool(int(binaryRow[lednum]))
+                else:
+                        for lednum in range (0,8):
+                                binaryMatrix[(8 * row) + lednum] = None
 
-		for lednum in range (0,8):
-			binaryMatrix[(0 * row) + lednum] = binaryRow[lednum]
+			#print str((0 * row) + lednum) + " " + str(binaryMatrix[(0 * row) + lednum]) + str(binaryRow[lednum])
 
 	if DEBUG:
-		for i in range (0,63):
-			if binaryMatrix[i] != True and binaryMatrix != False:
-				print "There's a problem. Binary value is " + str(binaryMatrix[i])
+		for i in range (0,64):
+			if binaryMatrix[i] != True and binaryMatrix[i] != False:
+				print "There's a problem. Binary value is " + str(bool(binaryMatrix[i]))
 
 	return binaryMatrix
