@@ -81,6 +81,8 @@ Sets all LEDs to be lit a random color. All other Black.
 Input:
 	matrix - Neopixel Wrapper
 	binaryMatrix - Length 64 Binary Array
+    startLED - First LED to set (default 0)
+    endLED - Last LED to set (default 64)
 Output: None 
 '''
 def setRandomColor(matrix, binaryMatrix):
@@ -89,6 +91,7 @@ def setRandomColor(matrix, binaryMatrix):
 			matrix.setPixelColor(lednum, randint(0, 0xFFFFFF))
 
 	matrix.show()
+
 ''' 
 Gets RGB Array for Single Color. All other Black.
 Input:
@@ -110,12 +113,14 @@ def getSingleColor(binaryMatrix, color):
 ''' 
 Sets all LEDs to be lit a single color. All other Black.
 Input:
-        matrix - Neopixel Wrapper
-        binaryMatrix - Length 64 binary Array
-        color - 24 Bit RGB Value
+    matrix - Neopixel Wrapper
+    binaryMatrix - Length 64 binary Array
+    color - 24 Bit RGB Value
+    startLED - First LED to set (default 0)
+    endLED - Last LED to set (default 64)
 Output: None 
 '''
-def setSingleColor(matrix, binaryMatrix, color):
+def setSingleColor(matrix, binaryMatrix, color, startLED = 0, endLED = 64):
         print str(binaryMatrix)
         
 	for lednum in range (0,64):
