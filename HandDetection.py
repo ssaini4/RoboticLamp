@@ -173,7 +173,7 @@ def getMatch(gray, keypoints):
 	search_params = dict(check=50)
 
 	flann = cv2.FlannBasedMatcher(index_params, search_params)
-	
+		
 	maxMatches = 0
 	maxLabel = ''
 	for i in keypoints:
@@ -186,20 +186,9 @@ def getMatch(gray, keypoints):
 		if(sumMatches > maxMatches):
 			maxMatches = sumMatches
 			maxLabel = label
-			
-		
-	for i in glob.glob(path):
-		img = cv2.imread(i,0 )
-		kp2 = orb.detect(img,None)
-		kp2, des2 = orb.compute(img,kp2)
-		
-		matches =flann.knnMatch(des,des2,k=2)
-		matchesMask = [m[0] for m in matches if len(m) ==2 
-						and m[0].distance <m[1].distance * 0.75]
-				
-		sumMatches = len(matchesMask)
-		if(sumMatches > maxMatches):
-			maxMatches = sumMatches
-			maxLabel = i
-			
-	print maxLabel
+
+	return maxLabel
+
+
+	
+	

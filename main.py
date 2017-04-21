@@ -27,10 +27,49 @@ bg_captured=0
 
 keypoints = HandDetection.getKeypoints()
 
+frameNumber = 0
+gestureCounter = np.zeros(10)
+gestureList = np.zeros(4)
+gestureListCounter = 0
 while True:
 	img = camera.read()
-	
-	HandDetection.getMatch(img,keypoints)
+	if frameNumber<10:
+		detectedGesture = HandDetection.getMatch(img,keypoints)
+		if "One" in detectedGesture:
+			gestureCounter[1] += 1
+			print 'One'
+		elif "Two" in detectedGesture:
+			gestureCounter[2] += 1
+			print 'Two'
+
+		elif "Five" in detectedGesture:
+			gestureCounter[3] += 1
+			print 'Five'
+		frameNumber += 1
+	else:
+		'''
+		This is where you need to make changes
+		'''
+		gesture = np.argmax(gestureCounter)
+		print 'Max gesture: ' + str(gesture)
+		gestureList[gestureListCounter] = gesture
+		if len(set(gestureList)) == 1:
+			print 'executing gesture...' + str(gesture)
+			#Execute the gesture based on the gesture NUmber here
+			
+			
+		else:
+			maxElement = max(gestureList)
+			maxElementCount = gestureList.tolist().count(maxElement)
+			print 'gesture Recognised..' + str(25*maxElementCount) +'%'	
+			#Status of gesture recognition here
+			
+		gestureListCounter += 1
+		gestureListCounter %= 4
+			
+		gestureCounter = np.zeros(10)
+		frameNumber = 0
+
 	cv2.imshow('input',img)
 	k = cv2.waitKey(10)
 	if k == 27:
