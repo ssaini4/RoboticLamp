@@ -13,6 +13,12 @@ import argparse
 import time
 import HandDetection
 import glob
+
+from neopixel import *
+import RecognitionMode as RecogMode
+import Colors
+import Symbols
+
 # ------------------------ BEGIN ------------------------ #
 #Construct the arguent parser and parse the arguments for the camera input to be used
 ap = argparse.ArgumentParser()
@@ -31,8 +37,25 @@ frameNumber = 0
 gestureCounter = np.zeros(10)
 gestureList = np.zeros(4)
 gestureListCounter = 0
+
+# LED Logic
+LED_COUNT      = 64      # Number of LED pixels.
+LED_PIN        = 18      # GPIO pin connected to the pixels (must support PWM!).
+LED_FREQ_HZ    = 800000  # LED signal frequency in hertz (usually 800khz)
+LED_DMA        = 5       # DMA channel to use for generating signal (try 5)
+LED_BRIGHTNESS = 50		 # Start Brightness
+LED_INVERT     = False   # True to invert the signal (when using NPN transistor level shift)
+PIXEL_COLOR    = None
+
+matrix = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)
+matrix.begin()
+RM = RecogMode.RecognitionMode(matrix)
+
 while True:
+	RM.enterRecognitionEntrance(average = True)
+
 	img = camera.read()
+
 	if frameNumber<10:
 		detectedGesture = HandDetection.getMatch(img,keypoints)
 		if "One" in detectedGesture:
@@ -47,6 +70,7 @@ while True:
 			print 'Five'
 		frameNumber += 1
 	else:
+
 		'''
 		This is where you need to make changes
 		'''
@@ -57,15 +81,41 @@ while True:
 			print 'executing gesture...' + str(gesture)
 			#Execute the gesture based on the gesture NUmber here
 			
-			
+			print "it works!"
+			return
+
 		else:
 			maxElement = max(gestureList)
 			maxElementCount = gestureList.tolist().count(maxElement)
 			print 'gesture Recognised..' + str(25*maxElementCount) +'%'	
 			#Status of gesture recognition here
-			
+			curSymbol = None
+			curCount = None
+
+			if maxElement == 1:
+				newSymbol = Symbols.S_1
+			elif maxElement == 2:
+				newSymbol = Symbols.S_2
+			else
+				newSymbol = Symbols.S_5
+
+			if newSymbol != curSymbol:
+				curSymbol = newSymbol
+				curCount = maxElementCount
+				RM.displaySymbol(Symbols.processSymbol(curSymbol), maxElementCount)
+			else:
+				if maxElementCount > curCount:
+					RM.downLevel()
+				elif maxElementCount < curCount:
+					RM.upLevel()
+				else:
+					print "same level, no change"
+
+				curCount = maxElementCount
+
+
 		gestureListCounter += 1
-		gestureListCounter %= 4
+		gestureListCounter %= 5
 			
 		gestureCounter = np.zeros(10)
 		frameNumber = 0

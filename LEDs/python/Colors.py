@@ -85,8 +85,8 @@ Input:
     endLED - Last LED to set (default 64)
 Output: None 
 '''
-def setRandomColor(matrix, binaryMatrix):
-	for lednum in range (0,64):
+def setRandomColor(matrix, binaryMatrix, startLED = 0, endLED = 64):
+	for lednum in range (startLED, endLED):
 		if binaryMatrix[lednum]:
 			matrix.setPixelColor(lednum, randint(0, 0xFFFFFF))
 
@@ -123,7 +123,10 @@ Output: None
 def setSingleColor(matrix, binaryMatrix, color, startLED = 0, endLED = 64):
         print str(binaryMatrix)
         
-	for lednum in range (0,64):
+    # Need to check if the matrix.setPixelColor
+    # saves from previous iterations
+
+	for lednum in range (startLED, endLED):
                 try:
                         if binaryMatrix[lednum]:
                                 print "set! " + str(lednum)

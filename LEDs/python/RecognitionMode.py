@@ -8,6 +8,9 @@ import Colors
 import Symbols
 from random import randint
 
+BEGIN_BOTTOM_BAR = 56
+END_BOTTOM_BAR = 64
+
 class RecognitionMode:
 	matrix = None
 
@@ -27,19 +30,16 @@ class RecognitionMode:
 		print self.SymbolColor
 		Colors.setSingleColor(self.matrix, symbolMatrix, self.SymbolColor)
 		# Overlay with Completion Bar
-		#Colors.setSingleColor(self.matrix, self.CompletionBarBinary[level], Colors.GREEN)
+		Colors.setSingleColor(self.matrix, self.CompletionBarBinary[level], Colors.GREEN, BEGIN_BOTTOM_BAR, END_BOTTOM_BAR)
 		self.CompletionBarIdx = 0
 
 	# Decreases bottom bar, doesn't touch other LEDs TODO
 	# Sets it red to indicate loss of lock
 	# Returns TRUE if already 0
 	def downLevel(self):
-                print "needs rework!"
-                return False
-                
 		if self.CompletionBarIdx != 0:
 			self.CompletionBarIdx -= 1
-			Colors.setSingleColor(self.matrix, self.CompletionBarBinary[self.CompletionBarIdx], Colors.RED)
+			Colors.setSingleColor(self.matrix, self.CompletionBarBinary[self.CompletionBarIdx], Colors.RED, BEGIN_BOTTOM_BAR, END_BOTTOM_BAR)
 
 			return False
 		else:
@@ -49,12 +49,10 @@ class RecognitionMode:
 	# Sets it green to indicate close lock
 	# Returns TRUE if at 4 (100%)
 	def upLevel(self):
-                print "needs rework!"
-                return False
 		if self.CompletionBarIdx != 4:
 			self.CompletionBarIdx += 1
 			
-			Colors.setSingleColor(self.matrix, self.CompletionBarBinary[self.CompletionBarIdx], Colors.GREEN)
+			Colors.setSingleColor(self.matrix, self.CompletionBarBinary[self.CompletionBarIdx], Colors.GREEN, BEGIN_BOTTOM_BAR, END_BOTTOM_BAR)
 
 			if self.CompletionBarIdx != 4:
 				return False
