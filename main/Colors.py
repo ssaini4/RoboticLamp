@@ -138,6 +138,15 @@ def setSingleColor(matrix, binaryMatrix, color, startLED = 0, endLED = 64):
                         
 	matrix.show()
 	
+'''
+Turns off all LEDs
+'''	
+def setOFF(matrix, startLED = 0, endLED = 64):
+	for lednum in range (startLED, endLED):
+		matrix.setPixelColor(lednum, Colors.BLACK)
+
+	matrix.show()
+
 ''' 
 Convert the provided red, green, blue color to a 24-bit color value.
 Each color component should be a value 0-255 where 0 is the lowest intensity

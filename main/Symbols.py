@@ -194,6 +194,8 @@ RECOGNITION_OUT_PERCENT = [
 		0xFF, 0xFF ]
 ]
 
+
+
 # Bar at the bottom of the LEDs
 # to indicate 0-25-50-75-100% Lock
 # Does not affect other LEDs
@@ -224,7 +226,76 @@ PERCENT_BAR = [
 		0x00, 0xFF ]
 ]
 
+# colon that shows with Hour
+TIME_COLON = [
+
+]
+
+# Digits in a 15-bit array
+HEX_DIGITS = [
+	[	1,1,1,1,0,1,1,0,1,1,0,1,1,1,1	], #0
+	[	0,0,1,0,0,1,0,0,1,0,0,1,0,0,1	], #1
+	[	1,1,1,0,0,1,1,1,1,1,0,0,1,1,1	], #2
+	[	1,1,1,0,0,1,1,1,1,0,0,1,1,1,1	], #3
+	[	1,0,1,1,0,1,1,1,1,0,0,1,0,0,1	], #4
+	[	1,1,1,1,0,0,1,1,1,0,0,1,1,1,1	], #5
+	[	1,1,1,1,0,0,1,1,1,1,0,1,1,1,1	], #6
+	[	1,1,1,0,0,1,0,0,1,0,0,1,0,0,1	], #7
+	[	1,1,1,1,0,1,1,1,1,1,0,1,1,1,1	], #8
+	[	1,1,1,1,0,1,1,1,1,0,0,1,1,1,1	]
+]
+
+# 15-bit time mappings that map to LED location 0-64.
+# 0: H1, 1: H2, 2: M1, 3: M2
+TIME_MAPPINGS = [
+	[ 0,1,2,8,9,10,16,17,18,24,25,26,32,33,34 ], #Hour1
+	[ 4,5,6,12,13,14,20,21,22,28,29,30,36,37,38 ], #Hour2
+	[ 25,26,27,33,34,35,41,42,43,49,50,51,57,58,59 ], #Minute1
+	[ 29,30,31,37,38,39,45,46,47,53,54,55,61,62,63 ] #Minute2
+]
+
 # ----------- SYMBOLS END -----------
+
+"""
+timeBinaryProcessor
+
+Processes 15-bit array for a number and maps it to a 64-bit binaryArray based on Hour1, Hour2, Minute1, or Minute2 (each a 15bit mapper)
+input:  int digitChoice (0-9)
+		int timeChoice (0=H1,1=H2,2=M1,3=M2) - chooses mapping for time
+output: binaryMatrix - 64 bit array of true/false
+"""
+def timeBinaryProcessor(digit, timeChoice):
+	binaryMatrix = [None] * 64
+
+	digitArray = HEX_DIGITS[digit]
+	timeMapping = TIME_MAPPINGS[timeChoice]
+
+	for lednum in range(0, 64):
+		binaryMatrix = False
+
+	for binLoc in range(0, len(digitArray)):
+		binaryMatrix[timeMapping[binLoc]] = digitArray[binLoc]
+
+
+"""
+binaryMatrixAdder
+
+Adds an array of binaryMatrix - if a bit for an LED location is true for any of them, set to high
+input:	binaryMatrices[] - array of binary Matrixes
+output: binaryMatrix - Single binaryMatrix after adding binary Matrices
+"""
+def binaryMatrixAdder(matrices):
+	finalBinaryMatrix = [None] * 64
+
+	for lednum in range (0,64):
+		finalBinaryMatrix = False
+
+		for matrixNum in range (0, len(matrices)):
+			if matrices[matrixNum][lednum]:
+				finalBinaryMatrix[lednum] = True
+				break
+
+	return finalBinaryMatrix
 
 """
 processSymbol
