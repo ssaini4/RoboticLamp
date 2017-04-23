@@ -36,8 +36,8 @@ class LEDClock:
 			if curTime == None or curTime != datetime.datetime.now():
 				curTime = datetime.datetime.now()
 				
-				timeArray = str(datetime.datetime.now().split(" "))
-				timeArray = str(timeArray[1].split(":"))
+				timeArray = str(datetime.datetime.now()).split(" ")
+				timeArray = timeArray[1].split(":")
 
 				intArray = [None] * 4
 
@@ -49,11 +49,16 @@ class LEDClock:
 				for i in range (0,4):
 					timeMatrix[i] = Symbols.timeBinaryProcessor(intArray[i], i)
 
+                                print timeMatrix
+
 				hourMatrix = Symbols.binaryMatrixAdder([timeMatrix[0], timeMatrix[1]])
 				minuteMatrix = Symbols.binaryMatrixAdder([timeMatrix[2], timeMatrix[3]])
 
 			if chooseShow: #show Hour
 				Colors.setSingleColor(self.matrix, hourMatrix, Colors.GREEN)
+
+                                # ADD CYAN-COLORED COLONS by creating an "RGBArrayAdder" method
+				
 				chooseShow = False
 			else: #show Minute
 				Colors.setSingleColor(self.matrix, minuteMatrix, Colors.RED)

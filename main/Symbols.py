@@ -227,7 +227,7 @@ PERCENT_BAR = [
 ]
 
 # colon that shows with Hour
-TIME_COLON = [
+TIME_COLON = [ 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00
 
 ]
 
@@ -271,10 +271,14 @@ def timeBinaryProcessor(digit, timeChoice):
 	timeMapping = TIME_MAPPINGS[timeChoice]
 
 	for lednum in range(0, 64):
-		binaryMatrix = False
+		binaryMatrix[lednum] = False
 
 	for binLoc in range(0, len(digitArray)):
-		binaryMatrix[timeMapping[binLoc]] = digitArray[binLoc]
+		binaryMatrix[timeMapping[binLoc]] = bool(digitArray[binLoc])
+		print str(bool(digitArray[binLoc]))
+                print str(binaryMatrix[timeMapping[binLoc]])
+                
+	return binaryMatrix
 
 
 """
@@ -287,8 +291,10 @@ output: binaryMatrix - Single binaryMatrix after adding binary Matrices
 def binaryMatrixAdder(matrices):
 	finalBinaryMatrix = [None] * 64
 
+        print matrices
+        
 	for lednum in range (0,64):
-		finalBinaryMatrix = False
+		finalBinaryMatrix[lednum] = False
 
 		for matrixNum in range (0, len(matrices)):
 			if matrices[matrixNum][lednum]:

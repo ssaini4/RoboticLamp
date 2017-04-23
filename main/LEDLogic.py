@@ -6,6 +6,8 @@ import BrightnessControl as BrightCtrl
 import RecognitionEntrance as RecogEntr
 import RecognitionMode as RecogMode
 import Symbols
+import LEDClock as Clock
+
 from random import randint
 
 # LED strip configuration:
@@ -31,6 +33,7 @@ if __name__ == '__main__':
         BC = BrightCtrl.BrightnessCtrl(matrix)
         RE = RecogEntr.RecognitionEntrance(matrix)
         RM = RecogMode.RecognitionMode(matrix)
+	CLK = Clock.LEDClock(matrix)
 
         matrix.show()
 

@@ -129,7 +129,6 @@ def setSingleColor(matrix, binaryMatrix, color, startLED = 0, endLED = 64):
 	for lednum in range (startLED, endLED):
                 try:
                         if binaryMatrix[lednum]:
-                                print "set! " + str(lednum)
                                 matrix.setPixelColor(lednum, color)
                         else:
                                 matrix.setPixelColor(lednum, BLACK)
@@ -143,7 +142,7 @@ Turns off all LEDs
 '''	
 def setOFF(matrix, startLED = 0, endLED = 64):
 	for lednum in range (startLED, endLED):
-		matrix.setPixelColor(lednum, Colors.BLACK)
+		matrix.setPixelColor(lednum, BLACK)
 
 	matrix.show()
 
