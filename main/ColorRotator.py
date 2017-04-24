@@ -11,7 +11,7 @@ from random import randint
 BEGIN_BOTTOM_BAR = 56
 END_BOTTOM_BAR = 64
 
-class RecognitionMode:
+class ColorRotator:
 	matrix = None
 
 	curRed = 0

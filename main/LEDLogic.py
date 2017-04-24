@@ -7,6 +7,7 @@ import RecognitionEntrance as RecogEntr
 import RecognitionMode as RecogMode
 import Symbols
 import LEDClock as Clock
+import ColorRotator
 
 from random import randint
 
@@ -34,11 +35,11 @@ if __name__ == '__main__':
         RE = RecogEntr.RecognitionEntrance(matrix)
         RM = RecogMode.RecognitionMode(matrix)
 	CLK = Clock.LEDClock(matrix)
+        ROT = ColorRotator.ColorRotator(matrix)
 
         matrix.show()
 
 	print ('Press Ctrl-C to quit.')
-
 
         while True:
                 value = raw_input("")
