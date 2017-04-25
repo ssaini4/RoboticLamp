@@ -65,23 +65,27 @@ while True:
 	isFist = detectFeature(fist,gray)
 	isOne = detectFeature(one, gray)
 	isSwag = detectFeature(swag,gray)
-	if len(isPalm) > 0:
+	if len(isPalm) == 2:
 		detectedGesture[0] = 1
-		print 'palm detected'
+		print 'Two Hands up'
+	elif len(isPalm) == 1:
+		print "One Hand up"
 	if len(isFist) > 0:
 		detectedGesture[1] = 1
 		print 'fist detected'
 	if len(isOne) > 0:
 		detectedGesture[2] = 1
 		print 'one detected'
-	if len(isSwag) > 0:
+	elif len(isSwag) > 0:
 		detectedGesture[3] = 1
 		print 'Swag detected'
-
+	
 	for (hx,hy,hw,hh) in isPalm:
 		cv2.rectangle(gray,(hx,hy),(hx+hw,hy+hh),(0,255,0),2)
 	for (hx,hy,hw,hh) in isFist:
 		cv2.rectangle(gray,(hx,hy),(hx+hw,hy+hh),(0,255,0),2)
+	#for (hx,hy,hw,hh) in isSwag:
+	#	cv2.rectangle(gray,(hx,hy),(hx+hw,hy+hh),(0,255,0),2)
 	
 
 	if (led.stdout.closed):
@@ -127,7 +131,7 @@ while True:
 				newSymbol = "Symbols.S_1"
 			elif maxElement == 2:
 				newSymbol = "Symbols.S_2"
-			elif maxElement == 5:
+			elif maxElement == 3:
 				newSymbol = "Symbols.S_5"
 
 			if newSymbol != curSymbol:
