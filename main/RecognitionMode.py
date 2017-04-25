@@ -27,7 +27,6 @@ class RecognitionMode:
 	# Displays symbol with a level (0-4) that shows a bar at the bottom TODO
 	def displaySymbol(self, symbolMatrix, level):
 		# Put Symbol on LED Matrix
-		print self.SymbolColor
 		Colors.setSingleColor(self.matrix, symbolMatrix, self.SymbolColor)
 		# Overlay with Completion Bar
 		Colors.setSingleColor(self.matrix, self.CompletionBarBinary[level], Colors.RED, BEGIN_BOTTOM_BAR, END_BOTTOM_BAR)
@@ -95,8 +94,6 @@ class RecognitionMode:
 
 		for i in range (0,5):
 			self.CompletionBarBinary[i] = Symbols.processSymbol(Symbols.PERCENT_BAR[i])
-
-                print "HELLO"
 
 		self.windowIdx = 0
 		self.CompletionBarIdx = 0

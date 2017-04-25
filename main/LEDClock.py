@@ -1,8 +1,3 @@
-'''
-TODO:
--Multithreads 
-'''
-
 from neopixel import *
 import Colors
 import Symbols
@@ -49,16 +44,16 @@ class LEDClock:
 				for i in range (0,4):
 					timeMatrix[i] = Symbols.timeBinaryProcessor(intArray[i], i)
 
-                                print timeMatrix
-
 				hourMatrix = Symbols.binaryMatrixAdder([timeMatrix[0], timeMatrix[1]])
 				minuteMatrix = Symbols.binaryMatrixAdder([timeMatrix[2], timeMatrix[3]])
 
 			if chooseShow: #show Hour
-				Colors.setSingleColor(self.matrix, hourMatrix, Colors.GREEN)
-
+				hourRGB = Colors.getSingleColor(hourMatrix, Colors.GREEN)
+				colonRGB = Colors.getSingleColor(Symbols.processSymbol(Symbols.TIME_COLON), Colors.SKYBLUE)
                                 # ADD CYAN-COLORED COLONS by creating an "RGBArrayAdder" method
-				
+				hourcolonRGB = Colors.RGBArrayAdder([hourRGB, colonRGB])
+
+				Colors.setRGBArray(self.matrix, hourcolonRGB)
 				chooseShow = False
 			else: #show Minute
 				Colors.setSingleColor(self.matrix, minuteMatrix, Colors.RED)

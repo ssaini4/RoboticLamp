@@ -16,6 +16,32 @@ def setRGBArray(matrix, RGBArray):
 			matrix.setPixelColor(lednum, RGBArray[lednum])
 
 	matrix.show()
+
+'''
+Combines 64-bit RGB Arrays by adding the values together
+Input: RGBArrays - Array of 64-bit RGB Arrays
+Output finalRGBArray - Single added 64-bit RGB Array
+'''
+def RGBArrayAdder(RGBArrays):
+	finalRGBArray = [0x000000] * 64
+
+	for lednum in range (0,64):
+
+		red = 0
+		green = 0
+		blue = 0
+
+		for matrixNum in range (0, len(RGBArrays)):
+			addR,addG,addB = ReverseColor(RGBArrays[matrixNum][lednum])
+
+			red = red + addR
+			green = green + addG
+			blue = blue + addB
+
+		finalRGBArray[lednum] = Color(red,green,blue)
+
+	return finalRGBArray
+
 ''' 
 Grabs a number of colors using current matrix RGB Values
 using a Gaussian Normal Distribution on each RGB Value
@@ -48,6 +74,9 @@ def getAvgColor(RGBArray, numColors):
 
 	#print str(hex(red)) + " " + str(hex(green)) + " " + str(hex(blue))
 
+	if numColors == 1:
+		return Color(int(red), int(green), int(blue))
+
 	# Values to be adjusted
 	redVals = rando.normal(red, 15.5, numColors)
 	greenVals = rando.normal(green, 15.5, numColors)
@@ -55,7 +84,6 @@ def getAvgColor(RGBArray, numColors):
 
 	for i in range (0, numColors):
 		ColorArray[i] = Color(int(redVals[i]), int(greenVals[i]), int(blueVals[i]))
-		print str(hex(ColorArray[i]))
 
 	return ColorArray
 
@@ -121,8 +149,6 @@ Input:
 Output: None 
 '''
 def setSingleColor(matrix, binaryMatrix, color, startLED = 0, endLED = 64):
-        print str(binaryMatrix)
-        
     # Need to check if the matrix.setPixelColor
     # saves from previous iterations
 
