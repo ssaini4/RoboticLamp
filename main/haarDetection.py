@@ -69,16 +69,14 @@ while True:
 		detectedGesture[0] = 1
 		print 'Two Hands up'
 	elif len(isPalm) == 1:
+		detectedGesture[1]= 1
 		print "One Hand up"
-	if len(isFist) > 0:
-		detectedGesture[1] = 1
-		print 'fist detected'
-	if len(isOne) > 0:
+	if len(isFist) == 2:
 		detectedGesture[2] = 1
-		print 'one detected'
-	elif len(isSwag) > 0:
+		print 'Two Fist detected'
+	elif len(isFist) == 1:
 		detectedGesture[3] = 1
-		print 'Swag detected'
+		print 'one fist detected'
 	
 	for (hx,hy,hw,hh) in isPalm:
 		cv2.rectangle(gray,(hx,hy),(hx+hw,hy+hh),(0,255,0),2)
@@ -127,13 +125,19 @@ while True:
 			curSymbol = None
 			curCount = None
 
-			if maxElement == 1:
+			if maxElement == 0:
+				#Brightness Up
 				newSymbol = "Symbols.S_1"
-			elif maxElement == 2:
+			elif maxElement == 1:
+				#Brightness Down
 				newSymbol = "Symbols.S_2"
-			elif maxElement == 3:
+			elif maxElement == 2:
+				#Clock
 				newSymbol = "Symbols.S_5"
-
+			elif maxElement == 3:
+				#Motors
+				newSymbol = "Symbols.S_4"
+				
 			if newSymbol != curSymbol:
 				curSymbol = newSymbol
 				curCount = maxElementCount
