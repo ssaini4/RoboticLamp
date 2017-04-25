@@ -43,7 +43,10 @@ if __name__ == '__main__':
 
         while True:
                 value = raw_input("")
-                eval(value)
+                try:
+                        eval(value)
+                except (NameError, AttributeError):
+                        print "Try again."
 ##                value = raw_input("0: RecogEntr, 1: RecogMode, 2: BrightCtrl, 3: exit - ")
 ##                
 ##                #Recognition Entrance

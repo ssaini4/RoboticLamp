@@ -24,18 +24,18 @@ class ColorRotator:
 
 	# nextColor does not handle timing.
 	def nextColor(self):
-		curBlue = curBlue + 127
+		self.curBlue = self.curBlue + 127
 
-		if curBlue > 255:
-			curBlue = 0
-			curGreen = curGreen + 127
-			if curGreen > 255:
-				curGreen = 0
-				curRed = curRed + 127
-				if curRed > 255:
-					curRed = 0
+		if self.curBlue > 255:
+			self.curBlue = 0
+			self.curGreen = self.curGreen + 127
+			if self.curGreen > 255:
+				self.curGreen = 0
+				self.curRed = self.curRed + 127
+				if self.curRed > 255:
+					self.curRed = 0
 
-		if curBlue == 0 and curGreen == 0 and curRed == 0:
+		if self.curBlue == 0 and self.curGreen == 0 and self.curRed == 0:
 			# set Random
 			self.random = True
 			Colors.setRandomColor(self.matrix, self.rotator_binMatrix)
@@ -43,7 +43,7 @@ class ColorRotator:
 			self.random = False
 			Colors.setSingleColor(self.matrix, self.rotator_binMatrix, Colors.Color(self.curRed, self.curGreen, self.curBlue))
 
-		print curRed + "," + curGreen + "," + curBlue
+		print str(self.curRed) + "," + str(self.curGreen) + "," + str(self.curBlue)
 
 	def enterColorRotator(self):
 		self.savedMatrixRGB = Colors.getRGBArray(self.matrix)		
@@ -63,7 +63,7 @@ class ColorRotator:
 				if self.random == True:
 					self.savedMAtrixRGB[lednum] = randint(0, 0xFFFFFF)
 				else:
-					self.savedMatrixRGB[lednum] = Colors.Color(curRed, curGreen, curBlue)
+					self.savedMatrixRGB[lednum] = Colors.Color(self.curRed, self.curGreen, self.curBlue)
 
 		Colors.setRGBArray(self.matrix, self.savedMatrixRGB)
 
