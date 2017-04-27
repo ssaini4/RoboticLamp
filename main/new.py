@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 import copy
 import math
-from appscript import app
 
 # Environment:
 # OS    : Mac OS EL Capitan
@@ -150,7 +149,7 @@ while camera.isOpened():
             if triggerSwitch is True:
                 if isFinishCal is True and cnt <= 2:
                     print cnt
-                    app('System Events').keystroke(' ')  # simulate pressing blank space
+
 
         cv2.imshow('output', drawing)
 
