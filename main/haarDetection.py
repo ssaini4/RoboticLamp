@@ -5,6 +5,8 @@
 # **********************************************
 
 import cv2
+import sys
+sys.path.append('/home/pi/Desktop/RoboticLamp/main/Adafruit_Python_PCA9685/Adafruit_PCA9685')
 import numpy as np
 import math
 from imutils.video import VideoStream
@@ -13,8 +15,9 @@ import argparse
 import time
 import HandDetection
 import glob
-
 import pexpect
+import shlex
+import subprocess
 # ------------------------ BEGIN ------------------------ #
 #Construct the arguent parser and parse the arguments for the camera input to be used
 ap = argparse.ArgumentParser()
@@ -30,14 +33,14 @@ bg_captured=0
 
 frameNumber = 0
 gestureCounter = np.zeros(10)
-detectedGesture = np.zeros(4)
-gestureList = np.zeros(4)
+detectedGesture = np.zeros(5)
+gestureList = np.zeros(5)
 gestureListCounter = 0
 
 #Start subprocess
 led = pexpect.spawn('sudo PYTHONPATH=".build/lib.linux-armv6l-2.7" python LEDLogic.py')
 print "initializing LEDs"
-time.sleep(9)
+time.sleep(5)
 print "entering recognition mode"
 scrub = "RM.enterRecognitionMode(average = True)\n"
 led.send(scrub)
@@ -47,43 +50,48 @@ led.send(scrub)
 palm = cv2.CascadeClassifier('../haar/palm.xml')
 fist = cv2.CascadeClassifier('../haar/fist.xml')
 hand = cv2.CascadeClassifier('../haar/hand.xml')
-swag = cv2.CascadeClassifier('../haar/cascade.xml')
+swag = cv2.CascadeClassifier('../haar/banana_classifier.xml')
 smile = cv2.CascadeClassifier('../haar/smile.xml')
-one = cv2.CascadeClassifier('../haar/one.xml')
+one = cv2.CascadeClassifier('../haar/new.xml')
 
 def detectFeature(model, img):
 	return model.detectMultiScale(gray,1.3,5)
 
-
+brightUpBool = False
+brightDownBool = False
+clockBool = False
+rotatorBool = False
 
 while True:
 	gray = camera.read()
 	cv2.imshow('input',gray)
 	gray = cv2.cvtColor(gray, cv2.COLOR_BGR2GRAY)
-	
+	gray = cv2.flip(gray,0)
 	isPalm = detectFeature(palm,gray)
 	isFist = detectFeature(fist,gray)
 	isOne = detectFeature(one, gray)
 	isSwag = detectFeature(swag,gray)
-	if len(isPalm) == 2:
+	if len(isSwag) == 1:
 		detectedGesture[0] = 1
-		print 'Two Hands up'
+		print 'Swag up'
 	elif len(isPalm) == 1:
 		detectedGesture[1]= 1
 		print "One Hand up"
-	if len(isFist) == 2:
+	if len(isOne) == 1:
 		detectedGesture[2] = 1
-		print 'Two Fist detected'
+		print 'One detected'
 	elif len(isFist) == 1:
 		detectedGesture[3] = 1
 		print 'one fist detected'
+	else:
+		detectedGesture[4] = 1
 	
 	for (hx,hy,hw,hh) in isPalm:
 		cv2.rectangle(gray,(hx,hy),(hx+hw,hy+hh),(0,255,0),2)
 	for (hx,hy,hw,hh) in isFist:
 		cv2.rectangle(gray,(hx,hy),(hx+hw,hy+hh),(0,255,0),2)
-	#for (hx,hy,hw,hh) in isSwag:
-	#	cv2.rectangle(gray,(hx,hy),(hx+hw,hy+hh),(0,255,0),2)
+	for (hx,hy,hw,hh) in isSwag:
+		cv2.rectangle(gray,(hx,hy),(hx+hw,hy+hh),(0,255,0),2)
 	
 
 	if (led.stdout.closed):
@@ -103,64 +111,137 @@ while True:
 		if detectedGesture[3] == 1:
 			gestureCounter[3] += 1
 			print "Four"
+		if detectedGesture[4] == 1:
+			gestureCounter[4] += 1
+			print "no gesture"
 		frameNumber += 1
 	else:
-
-	
 		#This is where you need to make changes
-	
-		gesture = np.argmax(gestureCounter)
-		gestureList[gestureListCounter] = gesture
-		if len(set(gestureList)) == 1:
-			print 'executing gesture...' + str(gesture)
-			#Execute the gesture based on the gesture NUmber here
-			
-			print "it works!"
-
+		
+		realGestures = gestureCounter[0:4] # non-empty gestures
+		if max(realGestures) >= 2:
+			#Gesture recognized
+			gesture = np.argmax(realGestures)
 		else:
-			maxElement = max(gestureList)
-			maxElementCount = gestureList.tolist().count(maxElement)
-			print 'gesture Recognised..' + str(25*maxElementCount) +'%'	
+			gesture = 4
+		
+		#gestureList[gestureListCounter] = gesture
+		
+		# This does EXIT commands: entered command but no gesture detected
+		if (brightUpBool or brightDownBool or clockBool or rotatorBool) and gesture == 4:
+			print "EXIT"
+			
+			print "up = " + str(brightUpBool)
+			print "down = " + str(brightDownBool)
+			
+			print str(gesture)
+			
+			time.sleep(5)
+			if brightUpBool:
+				print "Exiting Brightness!"
+				inputStr = "BC.exitControlMode()\n"
+				brightUpBool = False
+				
+			elif brightDownBool:
+				print "Exiting Brightness!"
+				inputStr = "BC.exitControlMode()\n"
+				brightDownBool = False
+				
+			elif clockBool:
+				print "Exiting Time!"
+				inputStr = "CLK.exitLEDClock()\n"
+				clockBool = False
+				
+			elif rotatorBool:
+				print "Exiting Rotating Color!"
+				inputStr = "ROT.exitColorRotator()\n"
+				rotatorBool = False
+				
+			else:
+				pass
+				#Incorrect gesture found
+				#pretend nothing happened i guess
+				
+			led.send(inputStr)
+		
+		# This does ACTION commands entered command and gesture still detected
+		elif (brightUpBool or brightDownBool or clockBool or rotatorBool) and gesture != 4:
+			
+			if brightUpBool and gesture == 0:
+				print "Increasing Brightness!"
+				inputStr = "BC.upLevel()\n"
+				
+			elif brightDownBool and gesture == 1:
+				print "Decreasing Brightness!"
+				inputStr = "BC.downLevel()\n"
+				
+			elif clockBool and gesture == 2:
+				print "Showing Time for 2 seconds!"
+				inputStr = "CLK.showTime()\n"
+				
+			elif rotatorBool and gesture == 3:
+				print "Rotating Color!"
+				inputStr = "ROT.nextColor()\n"
+			else:
+				pass
+				#Incorrect gesture found
+				#pretend nothing happened i guess
+			
+			led.send(inputStr)
+			
+		# This does ENTER commands
+		else:
+
+			print 'gesture Recognised..'	
 			#Status of gesture recognition here
 			curSymbol = None
 			curCount = None
+			noLock = False
 
-			if maxElement == 0:
+			if gesture == 0:
 				#Brightness Up
-				newSymbol = "Symbols.S_1"
-			elif maxElement == 1:
+				print "Entering Brightness Control - up"
+				inputStr = "BC.enterControlMode()\n"
+				brightUpBool = True
+				#newSymbol = "Symbols.SYMBOL_B"
+			
+			elif gesture == 1:
 				#Brightness Down
-				newSymbol = "Symbols.S_2"
-			elif maxElement == 2:
+				print "Entering Brightness Control - down"
+				inputStr = "BC.enterControlMode()\n"
+				brightDownBool = True
+			
+			elif gesture == 2:
 				#Clock
-				newSymbol = "Symbols.S_5"
-			elif maxElement == 3:
-				#Motors
-				newSymbol = "Symbols.S_4"
+				print "Entering Clock"
+				newSymbol = "Symbols.SYMBOL_T"
+				inputStr = "CLK.enterLEDClock()\n"
+				clockBool = True
 				
-			if newSymbol != curSymbol:
-				curSymbol = newSymbol
-				curCount = maxElementCount
-				inputStr = "RM.displaySymbol(Symbols.processSymbol(" + curSymbol + ")," + str(maxElementCount) + ")\n"
-				print inputStr
-				led.send(inputStr)
-			else:
-				if maxElementCount > curCount:
-					led.send("RM.downLevel()\n")
-				elif maxElementCount < curCount:
-					led.send("RM.upLevel()\n")
-				else:
-					print "same level, no change"
-
-				curCount = maxElementCount
-
+			elif gesture == 3:
+				#Color Rotation
+				print "Entering Color Rotation"
+				newSymbol = "Symbols.SYMBOL_C"
+				inputStr = "ROT.enterColorRotator()\n"
+				rotatorBool = True
+				
+				#Motor command
+				proc = subprocess.Popen(shlex.split('sudo python simpletest.py'))
+				proc.communicate()
+			
+			elif gesture == 4:
+				noLock = True
+				newSymbol = "derp"
+				inputStr = "RM.noLock()\n"
+				
+			led.send(inputStr)
 
 		gestureListCounter += 1
 		gestureListCounter %= 4
 			
 		gestureCounter = np.zeros(10)
 		frameNumber = 0
-	detectedGesture = np.zeros(4)
+	detectedGesture = np.zeros(5)
 
 	
 	cv2.imshow('img',gray)
