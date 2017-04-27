@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import copy
 import math
+import time
 
 # Environment:
 # OS    : Mac OS EL Capitan
@@ -10,7 +11,7 @@ import math
 
 # parameters
 cap_region_x_begin=0.5  # start point/total width
-cap_region_y_end=0.8  # start point/total width
+cap_region_y_end=1  # start point/total width
 threshold = 60  #  BINARY threshold
 blurValue = 41  # GaussianBlur parameter
 bgSubThreshold = 50
@@ -19,6 +20,12 @@ bgSubThreshold = 50
 isBgCaptured = 0   # bool, whether the background captured
 triggerSwitch = False  # if true, keyborad simulator works
 
+NWbox = None
+NEbox = None
+SWbox = None
+SEbox = None
+
+startX = None
 def printThreshold(thr):
     print("! Changed threshold to "+str(thr))
 
@@ -33,9 +40,60 @@ def removeBG(frame):
     res = cv2.bitwise_and(frame, frame, mask=fgmask)
     return res
 
+# 0 = NW
+# 1 = NE
+# 2 = SW
+# 3 = SE
+def inBetweenBox(point):
+    (x,y) = point
+    print (x+startX, y)
+    x = x + startX
+
+    (leftX, upY) = NWbox[0]
+    (rightX, downY) = NWbox[1]
+    print NWbox[0]
+    print NWbox[1]
+
+    if leftX <= x <= rightX:
+        if upY <= y <= downY:
+            print "HELLO"
+            return 0
+
+
+    (leftX, upY) = NEbox[0]
+    (rightX, downY) = NEbox[1]
+
+    if leftX <= x <= rightX:
+        if upY <= y <= downY:
+            return 1
+
+
+    (leftX, upY) = SWbox[0]
+    (rightX, downY) = SWbox[1]
+
+    if leftX <= x <= rightX:
+        if upY <= y <= downY:
+            return 2            
+    
+
+    (leftX, upY) = SEbox[0]
+    (rightX, downY) = SEbox[1]
+
+    if leftX <= x <= rightX:
+        if upY <= y <= downY:
+            return 3
+
+    return -1
 
 def calculateFingers(res,drawing):  # -> finished bool, cnt: finger count
     #  convexity defect
+
+    # 0 - NW
+    # 1 - NE
+    # 2 - SW
+    # 3 - SE
+    Boxes = [0] * 4
+
     hull = cv2.convexHull(res, returnPoints=False)
     if len(hull) > 3:
         defects = cv2.convexityDefects(res, hull)
@@ -55,10 +113,18 @@ def calculateFingers(res,drawing):  # -> finished bool, cnt: finger count
                     cnt += 1
                     cv2.circle(drawing, far, 8, [211, 84, 0], -1)
 
+                    boxNum = inBetweenBox(far)
+                    if boxNum != -1:
+                        Boxes[boxNum] = Boxes[boxNum] + 1 
+
             if cnt > 0:
                 print str(cnt)
-            return True, cnt
-    return False, 0
+                maxFingers = np.argmax(Boxes)
+                print Boxes[maxFingers]
+                if Boxes[maxFingers] >= 3:
+                    return maxFingers
+            return -1
+    return -1
 
 
 # Camera
@@ -77,6 +143,7 @@ while camera.isOpened():
      #            (frame.shape[1], int(cap_region_y_end * frame.shape[0])), (255, 0, 0), 2)
 
     leftX = int(cap_region_x_begin * frame.shape[1])
+    startX = leftX
     rightX = int(frame.shape[1])
     midX = int(leftX + ((rightX - leftX) / 2))
 
@@ -84,26 +151,30 @@ while camera.isOpened():
     downY = int(cap_region_y_end * frame.shape[0])
     midY = int(upY + ((downY - upY) / 2))
 
-    print str(leftX)
-    print str(midX)
-    print str(rightX)
+    # print str(leftX)
+    # print str(midX)
+    # print str(rightX)
 
-    print str(upY)
-    print str(midY)
-    print str(downY)
+    # print str(upY)
+    # print str(midY)
+    # print str(downY)
 
     #NW frame
-    cv2.rectangle(frame, (leftX, upY), (midX, midY), (255, 0, 0), 2)
+    NWbox = ((leftX, upY), (midX-50, midY-50))
+    cv2.rectangle(frame, NWbox[0], NWbox[1], (255, 0, 0), 2)
 
     #NE frame
-    cv2.rectangle(frame, (midX, upY), (rightX, midY), (255, 0, 0), 2)
+    NEbox = ((midX+50, upY), (rightX, midY-50))
+    cv2.rectangle(frame, NEbox[0], NEbox[1], (255, 0, 0), 2)
 
     #SW frame
-    cv2.rectangle(frame, (leftX, midY), (midX, downY), (255, 0, 0), 2)
+    SWbox = ((leftX, midY+50), (midX-50, downY))
+    cv2.rectangle(frame, SWbox[0], SWbox[1], (255, 0, 0), 2)
 
     #SE frame
-    cv2.rectangle(frame, (midX, midY), (rightX, downY), (255, 0, 0), 2)
-
+    SEbox = ((midX+50, midY+50), (rightX, downY))
+    cv2.rectangle(frame, SEbox[0], SEbox[1], (255, 0, 0), 2)
+    
     # cv2.rectangle(frame, (int(cap_region_x_begin * frame.shape[1]), 0),
     #              (frame.shape[1] / 2, int(cap_region_y_end * frame.shape[0])/2), (255, 0, 0), 2)
 
@@ -145,11 +216,22 @@ while camera.isOpened():
             cv2.drawContours(drawing, [res], 0, (0, 255, 0), 2)
             cv2.drawContours(drawing, [hull], 0, (0, 0, 255), 3)
 
-            isFinishCal,cnt = calculateFingers(res,drawing)
-            if triggerSwitch is True:
-                if isFinishCal is True and cnt <= 2:
-                    print cnt
+            location = calculateFingers(res,drawing)
 
+            if location == 0:
+                print "NW SUCCESS"
+                #time.sleep(1)
+            elif location == 1:
+                print "NE SUCCESS"
+                #time.sleep(1)
+            elif location == 2:
+                print "SW SUCCESS"
+                #time.sleep(1)
+            elif location == 3:
+                print "SE SUCCESS"
+                #time.sleep(1)
+            else:
+                pass
 
         cv2.imshow('output', drawing)
 
